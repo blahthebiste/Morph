@@ -17,7 +17,10 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.PlaySoundAtEntityEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
@@ -32,6 +35,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import static me.ichun.mods.morph.common.Morph.CANMORPH_TAG_NAME;
 
 public class EventHandlerServer
 {
@@ -159,6 +164,11 @@ public class EventHandlerServer
 
                     PlayerMorphHandler.getInstance().acquireMorph(player, living, Morph.config.instaMorph == 1, true);
                 }
+//                else {
+//                    // Debug: send message in chat if player does not have morphing enabled
+//                    ITextComponent textComponent = new TextComponentString(TextFormatting.RED + "You cannot morph!");
+//                    player.sendStatusMessage(textComponent, true);
+//                }
             }
         }
     }
@@ -225,6 +235,10 @@ public class EventHandlerServer
             playerMorphs.put(player.getName(), morphs);
         }
         return morphs;
+    }
+
+    public boolean getPlayerCanMorph(EntityPlayer player) {
+        return player.getTags().contains(CANMORPH_TAG_NAME);
     }
 
     public HashMap<String, MorphInfo> morphsActive = new HashMap<>(); //These are the active morphs. Entity instance are retreived from here

@@ -13,6 +13,7 @@ import me.ichun.mods.morph.common.morph.MorphInfo;
 import me.ichun.mods.morph.common.morph.MorphState;
 import me.ichun.mods.morph.common.morph.MorphVariant;
 import me.ichun.mods.morph.common.packet.PacketAcquireEntity;
+import me.ichun.mods.morph.common.packet.PacketToggleMorphing;
 import me.ichun.mods.morph.common.packet.PacketUpdateActiveMorphs;
 import me.ichun.mods.morph.common.packet.PacketUpdateMorphList;
 import net.minecraft.client.Minecraft;
@@ -24,6 +25,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.FakePlayer;
@@ -34,6 +38,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.*;
+
+import static me.ichun.mods.morph.common.Morph.CANMORPH_TAG_NAME;
 
 public class PlayerMorphHandler implements IApi
 {
@@ -55,9 +61,16 @@ public class PlayerMorphHandler implements IApi
         MinecraftForge.EVENT_BUS.register(INSTANCE); //For capturing player logins/logouts
     }
 
+    // Now checks if the player has had morphing enabled for them.
     @Override
     public boolean canPlayerMorph(EntityPlayer player)
     {
+        if(!player.getTags().contains(CANMORPH_TAG_NAME)) {
+            // Debug: send message in chat if player does not have morphing enabled
+            ITextComponent textComponent = new TextComponentString(TextFormatting.RED + "You lack morph ability!");
+            player.sendStatusMessage(textComponent, true);
+            return false;
+        }
         if(Morph.config.listIsBlacklistPlayers == 0) //If the list is a whitelist... Check the whitelist.
         {
             for(String s : Morph.config.blackwhiteListedPlayers)
@@ -67,6 +80,10 @@ public class PlayerMorphHandler implements IApi
                     return true;
                 }
             }
+            // Debug: send message in chat if player does not have morphing enabled
+            ITextComponent textComponent = new TextComponentString(TextFormatting.RED + "You are not in the whitelist!");
+            player.sendStatusMessage(textComponent, true);
+            return false;
         }
         else //The list is a blacklist. If the player name is in here, return false.
         {
@@ -74,6 +91,9 @@ public class PlayerMorphHandler implements IApi
             {
                 if(s.equalsIgnoreCase(player.getName()))
                 {
+                    // Debug: send message in chat if player does not have morphing enabled
+                    ITextComponent textComponent = new TextComponentString(TextFormatting.RED + "You are in the blacklist!");
+                    player.sendStatusMessage(textComponent, true);
                     return false;
                 }
             }
@@ -392,6 +412,10 @@ public class PlayerMorphHandler implements IApi
         ArrayList<MorphVariant> morphs = Morph.eventHandlerServer.getPlayerMorphs(event.player);
         Morph.channel.sendTo(new PacketUpdateActiveMorphs(null), event.player); //Send the player a list of everyone's morphs
         Morph.channel.sendTo(new PacketUpdateMorphList(true, morphs.toArray(new MorphVariant[morphs.size()])), event.player); //Send the player's morph list to them
+
+        // Retrieve whether the player can morph:
+        boolean enable = Morph.eventHandlerServer.getPlayerCanMorph(event.player);
+        Morph.channel.sendTo(new PacketToggleMorphing(Boolean.toString(enable)), event.player);
     }
 
     @SubscribeEvent
@@ -513,7 +537,7 @@ public class PlayerMorphHandler implements IApi
         }
     }
 
-    public boolean loadPlayerData(EntityPlayer player) //Returns true if the player has a morph and requires synching to the clients.
+    public boolean loadPlayerData(EntityPlayer player) //Returns true if the player has a morph and requires syncing to the clients.
     {
         NBTTagCompound tag = EntityHelper.getPlayerPersistentData(player, MORPH_DATA_NAME);
 

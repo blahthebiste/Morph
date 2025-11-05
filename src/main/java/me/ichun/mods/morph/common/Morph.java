@@ -52,6 +52,8 @@ public class Morph
 
     public static SoundEvent soundMorph;
 
+    public static String CANMORPH_TAG_NAME = MOD_ID+":canmorph";
+
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {

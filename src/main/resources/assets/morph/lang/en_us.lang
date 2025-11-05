@@ -112,6 +112,8 @@ morph.config.prop.blackwhiteListedPlayers.comment=A blacklist or whitelist of pl
 morph.config.prop.listIsBlacklistPlayers.comment=Is the list a blacklist or whitelist? (Yes = Blacklist, No = Whitelist)
 morph.config.prop.abilitiesToHideInGui.comment=Abilities to be hidden in the selector GUI.
 
+morph.command.enable=/morph enable [player] - Gives access to the morphing and acquiring abilities.
+morph.command.disable=/morph disable [player] - Removes access to the morphing and acquiring abilities.
 morph.command.analyse=/morph analyse <player> <entity name> - Analyses a class of morphs from the player for NBT variation
 morph.command.demorph=/morph demorph [player] [force demorph even if offline (true/false)] - Makes a player demorph
 morph.command.clean=/morph clean [player] - Cleans all the player's morphs with the NBT modifier in an attempt to remove duplicate morphs (if mappings are up to date).
@@ -144,5 +146,7 @@ morph.command.unsuccessful=Unsuccessful in executing command on %s.
 morph.command.analyseClass=Analysing class: %s
 morph.command.analyseAllTags=NBT Tags: %s
 morph.command.analyseVariantTags=Variant Tags (+ means added or modified, - means removed): %s
+morph.command.enabled=Enabled Morphing ability for %s
+morph.command.disabled=Disabled Morphing ability for %s
 
 subtitles.morph.morph=Entity morphing

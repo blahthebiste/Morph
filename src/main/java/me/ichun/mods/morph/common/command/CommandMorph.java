@@ -6,6 +6,8 @@ import me.ichun.mods.morph.api.event.MorphAcquiredEvent;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.handler.PlayerMorphHandler;
 import me.ichun.mods.morph.common.morph.MorphVariant;
+import me.ichun.mods.morph.common.packet.PacketDemorph;
+import me.ichun.mods.morph.common.packet.PacketToggleMorphing;
 import me.ichun.mods.morph.common.packet.PacketUpdateMorphList;
 import net.minecraft.command.*;
 import net.minecraft.entity.*;
@@ -18,9 +20,7 @@ import net.minecraft.server.management.PlayerInteractionManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.*;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.FakePlayer;
@@ -30,6 +30,8 @@ import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.util.*;
+
+import static me.ichun.mods.morph.common.Morph.CANMORPH_TAG_NAME;
 
 public class CommandMorph extends CommandBase
 {
@@ -62,6 +64,8 @@ public class CommandMorph extends CommandBase
             if(args[0].equalsIgnoreCase("help"))
             {
                 //				<demorph|clear|morph|give> [player] [force (true/false) / entity name]
+                sender.sendMessage(new TextComponentTranslation("morph.command.enable").setStyle(TEXT_GRAY));
+                sender.sendMessage(new TextComponentTranslation("morph.command.disable").setStyle(TEXT_GRAY));
                 sender.sendMessage(new TextComponentTranslation("morph.command.analyse").setStyle(TEXT_GRAY));
                 sender.sendMessage(new TextComponentTranslation("morph.command.demorph").setStyle(TEXT_GRAY));
                 sender.sendMessage(new TextComponentTranslation("morph.command.clean").setStyle(TEXT_GRAY));
@@ -118,6 +122,14 @@ public class CommandMorph extends CommandBase
                     {
                         notifyCommandListener(sender, this, "morph.command.playerNotFoundForcedNoTagsChanged", player1.getName());
                     }
+                }
+                else if(args[0].equalsIgnoreCase("enable")) {
+                    toggleMorphing(player, true);
+                    notifyCommandListener(sender, this, "morph.command.enabled", player.getName());
+                }
+                else if(args[0].equalsIgnoreCase("disable")) {
+                    toggleMorphing(player, false);
+                    notifyCommandListener(sender, this, "morph.command.disabled", player.getName());
                 }
                 else if(args[0].equalsIgnoreCase("demorph"))
                 {
@@ -572,5 +584,22 @@ public class CommandMorph extends CommandBase
     public boolean isUsernameIndex(String[] args, int index)
     {
         return args.length > 0 && !args[0].equalsIgnoreCase("help") && index == 1;
+    }
+
+    // Helper function to update a player to be able to morph.
+    // enable: determines whether this function enables or disables the morphing ability
+    public void toggleMorphing(EntityPlayerMP player, boolean enable) {
+        ITextComponent textComponent;
+        if(enable) {
+            textComponent = new TextComponentString(TextFormatting.GREEN + "You have gained the morph ability!");
+            player.getTags().add(CANMORPH_TAG_NAME);
+        }
+        else {
+            textComponent = new TextComponentString(TextFormatting.GREEN + "You have lost the morph ability!");
+            player.getTags().remove(CANMORPH_TAG_NAME);
+        }
+        Morph.channel.sendTo(new PacketToggleMorphing(Boolean.toString(enable)), player);
+        // Debug: send message in chat if player does not have morphing enabled
+        player.sendStatusMessage(textComponent, true);
     }
 }

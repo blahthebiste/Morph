@@ -46,6 +46,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.GameType;
 import net.minecraft.world.World;
@@ -99,6 +102,8 @@ public class EventHandlerClient
     public int selectorScrollVertTimer = 0;
     public int selectorScrollHoriTimer = 0;
 
+    // Track whether the player associated with this client can morph
+    public boolean canMorph = false;
     public boolean showFavourites = false;
     public int radialShowTimer = 0;
     public double radialDeltaX = 0D;
@@ -124,6 +129,9 @@ public class EventHandlerClient
     public void onKeyEvent(KeyEvent event)
     {
         Minecraft mc = Minecraft.getMinecraft();
+        if(!canMorph) {
+            return;
+        }
         if(event.keyBind.isPressed())
         {
             if(event.keyBind.equals(Morph.config.keySelectorUp) || event.keyBind.equals(Morph.config.keySelectorDown) || event.keyBind.equals(Morph.config.keySelectorLeft) || event.keyBind.equals(Morph.config.keySelectorRight))

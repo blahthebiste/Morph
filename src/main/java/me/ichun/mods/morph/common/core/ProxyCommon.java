@@ -23,6 +23,7 @@ public class ProxyCommon
                 PacketUpdateActiveMorphs.class,
                 PacketGuiInput.class,
                 PacketDemorph.class,
+                PacketToggleMorphing.class,
                 PacketAcquireEntity.class
         );
     }

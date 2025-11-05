@@ -3,9 +3,10 @@
   "modid" : "morph",
   "name" : "Morph",
   "version" : "${version}",
+  "mcversion": "${mcversion}",
   "url" : "http://ichun.me/mods/morph/",
   "credits" : "",
-  "authors": [
+  "authorList": [
     "iChun"
   ],
   "description": "This mod allows you to kill other entities and take their form.",

@@ -1,4 +1,18 @@
-Morph
+Morph Tweaked
+====================
+Gameplay Changes:
+
+- Morph ability disabled for all players by default, enabled through command
+- Cannot use items while morphed
+
+Technical Changes:
+
+- Updated the code to ForgeGradle 8
+- The access transformer file from iChunUtil is now included by default
+- iChunUtil is now downlaoded through CurseMaven
+
+
+Original Description:
 ====================
 
 Gameplay:

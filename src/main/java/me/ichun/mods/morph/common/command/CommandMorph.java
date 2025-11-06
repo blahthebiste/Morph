@@ -32,6 +32,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 import static me.ichun.mods.morph.common.Morph.CANMORPH_TAG_NAME;
+import static me.ichun.mods.morph.common.Morph.config;
 
 public class CommandMorph extends CommandBase
 {
@@ -64,15 +65,15 @@ public class CommandMorph extends CommandBase
             if(args[0].equalsIgnoreCase("help"))
             {
                 //				<demorph|clear|morph|give> [player] [force (true/false) / entity name]
-                sender.sendMessage(new TextComponentTranslation("morph.command.enable").setStyle(TEXT_GRAY));
-                sender.sendMessage(new TextComponentTranslation("morph.command.disable").setStyle(TEXT_GRAY));
-                sender.sendMessage(new TextComponentTranslation("morph.command.analyse").setStyle(TEXT_GRAY));
-                sender.sendMessage(new TextComponentTranslation("morph.command.demorph").setStyle(TEXT_GRAY));
-                sender.sendMessage(new TextComponentTranslation("morph.command.clean").setStyle(TEXT_GRAY));
-                sender.sendMessage(new TextComponentTranslation("morph.command.remove").setStyle(TEXT_GRAY));
-                sender.sendMessage(new TextComponentTranslation("morph.command.clear").setStyle(TEXT_GRAY));
-                sender.sendMessage(new TextComponentTranslation("morph.command.morph").setStyle(TEXT_GRAY));
-                sender.sendMessage(new TextComponentTranslation("morph.command.give").setStyle(TEXT_GRAY));
+                sender.sendMessage(new TextComponentTranslation("morphtweaked.command.enable").setStyle(TEXT_GRAY));
+                sender.sendMessage(new TextComponentTranslation("morphtweaked.command.disable").setStyle(TEXT_GRAY));
+                sender.sendMessage(new TextComponentTranslation("morphtweaked.command.analyse").setStyle(TEXT_GRAY));
+                sender.sendMessage(new TextComponentTranslation("morphtweaked.command.demorph").setStyle(TEXT_GRAY));
+                sender.sendMessage(new TextComponentTranslation("morphtweaked.command.clean").setStyle(TEXT_GRAY));
+                sender.sendMessage(new TextComponentTranslation("morphtweaked.command.remove").setStyle(TEXT_GRAY));
+                sender.sendMessage(new TextComponentTranslation("morphtweaked.command.clear").setStyle(TEXT_GRAY));
+                sender.sendMessage(new TextComponentTranslation("morphtweaked.command.morph").setStyle(TEXT_GRAY));
+                sender.sendMessage(new TextComponentTranslation("morphtweaked.command.give").setStyle(TEXT_GRAY));
             }
             else
             {
@@ -116,31 +117,31 @@ public class CommandMorph extends CommandBase
                         FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayers().add(player1);
                         FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().saveAllPlayerData();
                         FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayers().remove(player1);
-                        notifyCommandListener(sender, this, "morph.command.successfulForce", player1.getName());
+                        notifyCommandListener(sender, this, "morphtweaked.command.successfulForce", player1.getName());
                     }
                     else
                     {
-                        notifyCommandListener(sender, this, "morph.command.playerNotFoundForcedNoTagsChanged", player1.getName());
+                        notifyCommandListener(sender, this, "morphtweaked.command.playerNotFoundForcedNoTagsChanged", player1.getName());
                     }
                 }
                 else if(args[0].equalsIgnoreCase("enable")) {
                     toggleMorphing(player, true);
-                    notifyCommandListener(sender, this, "morph.command.enabled", player.getName());
+                    if(config.silentTogglingCommands <= 0) notifyCommandListener(sender, this, "morphtweaked.command.enabled", player.getName());
                 }
                 else if(args[0].equalsIgnoreCase("disable")) {
                     toggleMorphing(player, false);
-                    notifyCommandListener(sender, this, "morph.command.disabled", player.getName());
+                    if(config.silentTogglingCommands <= 0) notifyCommandListener(sender, this, "morphtweaked.command.disabled", player.getName());
                 }
                 else if(args[0].equalsIgnoreCase("demorph"))
                 {
                     if(PlayerMorphHandler.getInstance().forceDemorph(player))
                     {
                         PlayerMorphHandler.getInstance().savePlayerData(player);
-                        notifyCommandListener(sender, this, "morph.command.forcingDemorph", player.getName());
+                        notifyCommandListener(sender, this, "morphtweaked.command.forcingDemorph", player.getName());
                     }
                     else
                     {
-                        notifyCommandListener(sender, this, "morph.command.notInMorph", player.getName());
+                        notifyCommandListener(sender, this, "morphtweaked.command.notInMorph", player.getName());
                     }
                 }
                 else if(args[0].equalsIgnoreCase("clean"))
@@ -208,10 +209,10 @@ public class CommandMorph extends CommandBase
                         PlayerMorphHandler.getInstance().savePlayerData(player);
 
                         Morph.channel.sendTo(new PacketUpdateMorphList(true, morphs.toArray(new MorphVariant[morphs.size()])), player);
-                        notifyCommandListener(sender, this, "morph.command.successful", player.getName());
+                        notifyCommandListener(sender, this, "morphtweaked.command.successful", player.getName());
                         return;
                     }
-                    notifyCommandListener(sender, this, "morph.command.unsuccessful", player.getName());
+                    notifyCommandListener(sender, this, "morphtweaked.command.unsuccessful", player.getName());
                 }
                 else if(args[0].equalsIgnoreCase("remove"))
                 {
@@ -235,11 +236,11 @@ public class CommandMorph extends CommandBase
                                 PlayerMorphHandler.getInstance().savePlayerData(player);
                                 morphs = Morph.eventHandlerServer.getPlayerMorphs(player);
                                 Morph.channel.sendTo(new PacketUpdateMorphList(true, morphs.toArray(new MorphVariant[morphs.size()])), player); //Send the player's morph list to them
-                                notifyCommandListener(sender, this, "morph.command.successful", player.getName());
+                                notifyCommandListener(sender, this, "morphtweaked.command.successful", player.getName());
                             }
                             else
                             {
-                                notifyCommandListener(sender, this, "morph.command.unsuccessful", player.getName());
+                                notifyCommandListener(sender, this, "morphtweaked.command.unsuccessful", player.getName());
                             }
                         }
                     }
@@ -254,7 +255,7 @@ public class CommandMorph extends CommandBase
                     {
                         if(args[2].startsWith("player:"))
                         {
-                            notifyCommandListener(sender, this, "morph.command.analysePlayer");
+                            notifyCommandListener(sender, this, "morphtweaked.command.analysePlayer");
                             return;
                         }
                         ArrayList<MorphVariant> morphs = Morph.eventHandlerServer.playerMorphs.get(player.getName());
@@ -267,10 +268,10 @@ public class CommandMorph extends CommandBase
                                     EntityLivingBase living = var.createEntityInstance(player.getEntityWorld());
                                     if(var.thisVariant.invalid)
                                     {
-                                        notifyCommandListener(sender, this, "morph.command.unsuccessful", player.getName());
+                                        notifyCommandListener(sender, this, "morphtweaked.command.unsuccessful", player.getName());
                                         return;
                                     }
-                                    notifyCommandListener(sender, this, "morph.command.analyseClass", living.getClass().getName());
+                                    notifyCommandListener(sender, this, "morphtweaked.command.analyseClass", living.getClass().getName());
 
                                     TreeMap<String, NBTBase> tags = new TreeMap<>(Ordering.natural());
                                     tags.putAll(var.entTag.tagMap);
@@ -309,7 +310,7 @@ public class CommandMorph extends CommandBase
                                         addedSb.append(tag.getValue() == null ? "null" : tag.getValue().getClass().getSimpleName().substring(6));
                                         addedSb.append("), ");
                                     }
-                                    notifyCommandListener(sender, this, "morph.command.analyseAllTags", addedSb.toString().isEmpty() ? "" : addedSb.toString().substring(0, addedSb.toString().length() - 2));
+                                    notifyCommandListener(sender, this, "morphtweaked.command.analyseAllTags", addedSb.toString().isEmpty() ? "" : addedSb.toString().substring(0, addedSb.toString().length() - 2));
 
                                     TreeMap<String, NBTBase> allModified = new TreeMap<>(Ordering.natural());
                                     added.keySet().stream().filter(removed.keySet()::contains).forEach((k) -> allModified.put(k, added.get(k)));
@@ -349,11 +350,11 @@ public class CommandMorph extends CommandBase
                                         modifiedSb.append(tag.getValue() == null ? "null" : tag.getValue().getClass().getSimpleName().substring(6));
                                         modifiedSb.append("), ");
                                     }
-                                    notifyCommandListener(sender, this, "morph.command.analyseVariantTags", modifiedSb.toString().isEmpty() ? "" : modifiedSb.toString().substring(0, modifiedSb.toString().length() - 2));
+                                    notifyCommandListener(sender, this, "morphtweaked.command.analyseVariantTags", modifiedSb.toString().isEmpty() ? "" : modifiedSb.toString().substring(0, modifiedSb.toString().length() - 2));
                                     return;
                                 }
                             }
-                            notifyCommandListener(sender, this, "morph.command.unsuccessful", player.getName());
+                            notifyCommandListener(sender, this, "morphtweaked.command.unsuccessful", player.getName());
                         }
                     }
                     else
@@ -367,7 +368,7 @@ public class CommandMorph extends CommandBase
                     PlayerMorphHandler.getInstance().savePlayerData(player);
                     ArrayList<MorphVariant> morphs = Morph.eventHandlerServer.getPlayerMorphs(player);
                     Morph.channel.sendTo(new PacketUpdateMorphList(true, morphs.toArray(new MorphVariant[morphs.size()])), player); //Send the player's morph list to them
-                    notifyCommandListener(sender, this, "morph.command.clearingMorphs", player.getName());
+                    notifyCommandListener(sender, this, "morphtweaked.command.clearingMorphs", player.getName());
                 }
                 else if(args[0].equalsIgnoreCase("morph") || args[0].equalsIgnoreCase("give"))
                 {
@@ -482,11 +483,11 @@ public class CommandMorph extends CommandBase
                             ArrayList<MorphVariant> morphs = Morph.eventHandlerServer.getPlayerMorphs(player);
                             Morph.channel.sendTo(new PacketUpdateMorphList(true, morphs.toArray(new MorphVariant[morphs.size()])), player);
                             PlayerMorphHandler.getInstance().savePlayerData(player);
-                            notifyCommandListener(sender, this, "morph.command.successful", player.getName());
+                            notifyCommandListener(sender, this, "morphtweaked.command.successful", player.getName());
                         }
                         else
                         {
-                            notifyCommandListener(sender, this, "morph.command.unsuccessful", player.getName());
+                            notifyCommandListener(sender, this, "morphtweaked.command.unsuccessful", player.getName());
                         }
                         return;
                     }
@@ -494,16 +495,16 @@ public class CommandMorph extends CommandBase
                     {
                         if(args[0].equalsIgnoreCase("morph") && PlayerMorphHandler.getInstance().forceMorph(player, entToMorphTo) || args[0].equalsIgnoreCase("give") && PlayerMorphHandler.getInstance().acquireMorph(player, entToMorphTo, false, false))
                         {
-                            notifyCommandListener(sender, this, "morph.command.successful", player.getName());
+                            notifyCommandListener(sender, this, "morphtweaked.command.successful", player.getName());
                         }
                         else
                         {
-                            notifyCommandListener(sender, this, "morph.command.unsuccessful", player.getName());
+                            notifyCommandListener(sender, this, "morphtweaked.command.unsuccessful", player.getName());
                         }
                     }
                     else
                     {
-                        notifyCommandListener(sender, this, "morph.command.cannotFindEntity");
+                        notifyCommandListener(sender, this, "morphtweaked.command.cannotFindEntity");
                     }
                 }
                 else
@@ -599,7 +600,9 @@ public class CommandMorph extends CommandBase
             player.getTags().remove(CANMORPH_TAG_NAME);
         }
         Morph.channel.sendTo(new PacketToggleMorphing(Boolean.toString(enable)), player);
-        // Debug: send message in chat if player does not have morphing enabled
-        player.sendStatusMessage(textComponent, true);
+        if(config.enableDebugMessages > 0) {
+            // Debug: send message in chat if player does not have morphing enabled
+            player.sendStatusMessage(textComponent, true);
+        }
     }
 }

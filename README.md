@@ -3,7 +3,7 @@ Morph Tweaked
 Gameplay Changes:
 
 - Morph ability disabled for all players by default, enabled through command
-- Cannot use items while morphed
+- Cannot use items while morphed (NYI)
 
 Technical Changes:
 

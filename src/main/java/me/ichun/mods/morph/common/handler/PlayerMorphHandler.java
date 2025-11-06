@@ -40,6 +40,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.util.*;
 
 import static me.ichun.mods.morph.common.Morph.CANMORPH_TAG_NAME;
+import static me.ichun.mods.morph.common.Morph.config;
 
 public class PlayerMorphHandler implements IApi
 {
@@ -66,9 +67,11 @@ public class PlayerMorphHandler implements IApi
     public boolean canPlayerMorph(EntityPlayer player)
     {
         if(!player.getTags().contains(CANMORPH_TAG_NAME)) {
-            // Debug: send message in chat if player does not have morphing enabled
-            ITextComponent textComponent = new TextComponentString(TextFormatting.RED + "You lack morph ability!");
-            player.sendStatusMessage(textComponent, true);
+            if(config.enableDebugMessages > 0) {
+                // Debug: send message in chat if player does not have morphing enabled
+                ITextComponent textComponent = new TextComponentString(TextFormatting.RED + "You lack morph ability!");
+                player.sendStatusMessage(textComponent, true);
+            }
             return false;
         }
         if(Morph.config.listIsBlacklistPlayers == 0) //If the list is a whitelist... Check the whitelist.
@@ -80,9 +83,11 @@ public class PlayerMorphHandler implements IApi
                     return true;
                 }
             }
-            // Debug: send message in chat if player does not have morphing enabled
-            ITextComponent textComponent = new TextComponentString(TextFormatting.RED + "You are not in the whitelist!");
-            player.sendStatusMessage(textComponent, true);
+            if(config.enableDebugMessages > 0) {
+                // Debug: send message in chat if player does not have morphing enabled
+                ITextComponent textComponent = new TextComponentString(TextFormatting.RED + "You are not in the whitelist!");
+                player.sendStatusMessage(textComponent, true);
+            }
             return false;
         }
         else //The list is a blacklist. If the player name is in here, return false.
@@ -91,9 +96,11 @@ public class PlayerMorphHandler implements IApi
             {
                 if(s.equalsIgnoreCase(player.getName()))
                 {
-                    // Debug: send message in chat if player does not have morphing enabled
-                    ITextComponent textComponent = new TextComponentString(TextFormatting.RED + "You are in the blacklist!");
-                    player.sendStatusMessage(textComponent, true);
+                    if(config.enableDebugMessages > 0) {
+                        // Debug: send message in chat if player does not have morphing enabled
+                        ITextComponent textComponent = new TextComponentString(TextFormatting.RED + "You are in the blacklist!");
+                        player.sendStatusMessage(textComponent, true);
+                    }
                     return false;
                 }
             }

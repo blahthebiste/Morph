@@ -111,6 +111,14 @@ public class Config extends ConfigBase
     public int disableMorphAcquisitionAnimation = 0;
 
     @ConfigProp(category = "clientOnly", side = Side.CLIENT)
+    @IntBool
+    public int enableDebugMessages = 0;
+
+    @ConfigProp(category = "clientOnly", side = Side.CLIENT)
+    @IntBool
+    public int silentTogglingCommands = 0;
+
+    @ConfigProp(category = "clientOnly", side = Side.CLIENT)
     public KeyBind keySelectorUp = new KeyBind(Keyboard.KEY_LBRACKET);
 
     @ConfigProp(category = "clientOnly", side = Side.CLIENT)

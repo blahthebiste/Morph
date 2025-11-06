@@ -58,7 +58,7 @@ public class EventHandlerServer
             if(!event.getEntityPlayer().getEntityWorld().isRemote && Morph.eventHandlerServer.morphsActive.containsKey(event.getEntityPlayer().getName()))
             {
                 event.setResult(stats);
-                event.getEntityPlayer().sendMessage(new TextComponentTranslation("morph.denySleep"));
+                event.getEntityPlayer().sendMessage(new TextComponentTranslation("morphtweaked.denySleep"));
             }
             else if(event.getEntityPlayer().getEntityWorld().isRemote && Morph.eventHandlerClient.morphsActive.containsKey(event.getEntityPlayer().getName()))
             {
